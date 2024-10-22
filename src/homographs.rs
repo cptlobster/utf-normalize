@@ -90,8 +90,38 @@ pub fn multirange_translation(source: char, target: char, size: u32, slice: u32,
     )
 }
 
+/// The ASCII filter should be placed at the front of a translator list. If you do not intend to
+/// match against any ASCII characters, this filter will return if a character is ASCII. This is an
+/// optimization, as otherwise it would have to run through all of the translators before returning.
+pub fn ascii_filter() -> Translator {
+    let ascii_ub: u32 = 128; // should I adjust this to allow for ASCII extended chars?
+    Box::new(
+        move |ord: u32| {
+            if (ord < ascii_ub) { Some(ord) } else { None }
+        }
+    )
+}
+
 /// Run a chain of translators on a single character.
 pub fn translate(source: char, translator: &[Translator]) -> char {
     let ord: u32 = source as u32;
-    char::from_u32(translator.iter().flat_map(|f| (*f)(ord)).next().unwrap_or(ord)).unwrap_or(source)
+    char::from_u32(translator.iter().flat_map(|f| (*f)(ord)).next().unwrap_or(ord))
+        .unwrap_or(source)
+}
+
+/// Run a chain of translators on a single character.
+pub fn translate_vec(source: char, translator: &Vec<Translator>) -> char {
+    let ord: u32 = source as u32;
+    char::from_u32(translator.iter().flat_map(|f| (*f)(ord)).next().unwrap_or(ord))
+        .unwrap_or(source)
+}
+
+/// Run a single translator on a single character. If you want to use multiple translators, you
+/// should use `translate()` with an array of translators.
+pub fn translate_one(source: char, translator: &Translator) -> char {
+    let ord: u32 = source as u32;
+    match translator(ord) {
+        Some(res0) => { char::from_u32(res0).unwrap_or(source) }
+        None => { source }
+    }
 }

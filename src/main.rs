@@ -18,7 +18,7 @@ mod homographs;
 use std::io::{Read, Write};
 use clap::Parser;
 use clio::{Input, Output};
-use homographs::{translate, range_translation};
+use homographs::{translate, range_translation, multirange_translation, ascii_filter};
 
 /// Program for normalizing uncommon Unicode characters into their ASCII equivalents.
 #[derive(Parser, Debug)]
@@ -54,6 +54,19 @@ fn main() {
         range_translation('z', 'a', 1),
         range_translation('A', 'B', 25),
         range_translation('Z', 'A', 1)
+    ];
+
+    let mathematical_an_translator = [
+        // return first on ASCII chars
+        ascii_filter(),
+        // Mathematical bold, italic, bold/italic, script, bold script; uppercase
+        multirange_translation('\u{1D400}', 'A', 26, 52, 5),
+        // Mathematical bold, italic, bold/italic, script, bold script; lowercase
+        multirange_translation('\u{1D41A}', 'a', 26, 52, 5),
+        // Mathematical bold fraktur; sans, bold, italic, bold/italic uppercase
+        multirange_translation('\u{1D56C}', 'A', 26, 52, 5),
+        // Mathematical bold fraktur; sans, bold, italic, bold/italic lowercase
+        multirange_translation('\u{1D586}', 'a', 26, 52, 5)
     ];
 
     /* Read input (for reading from stdin, this is intended to be a pipe) */
