@@ -13,12 +13,12 @@
 //
 //     You should have received a copy of the GNU General Public License
 //     along with this program.  If not, see <https://www.gnu.org/licenses/>.
-mod homographs;
+mod translators;
 
 use std::io::{Read, Write};
 use clap::Parser;
 use clio::{Input, Output};
-use homographs::{translate, range_translation, multirange_translation, ascii_filter};
+use translators::{translate, range_translation, multirange_translation, ascii_filter};
 
 /// Program for normalizing uncommon Unicode characters into their ASCII equivalents.
 #[derive(Parser, Debug)]

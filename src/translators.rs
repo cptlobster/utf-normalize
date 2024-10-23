@@ -1,4 +1,4 @@
-/// Homograph translator function generators.
+/// Function generators for Unicode homoglyph normalization.
 //     Copyright (C) 2024  Dustin Thomas <io@cptlobster.dev>
 //
 //     This program is free software: you can redistribute it and/or modify
@@ -13,7 +13,6 @@
 //
 //     You should have received a copy of the GNU General Public License
 //     along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
 
 /// The Translator is an alias for a function that converts a UTF-32 codepoint (represented as a
 /// `u32`) to another UTF-32 codepoint. How this conversion is achieved is an exercise left to the

@@ -1,4 +1,4 @@
-# dehomograph
+# utf-normalize
 Program for normalizing uncommon Unicode characters into their ASCII equivalents.
 
 This was inspired by content moderation use cases where spammers will utilize unusual Unicode characters (i.e. the
@@ -8,15 +8,15 @@ group for bold/italic text on platforms that otherwise don't support it, such as
 
 ## Running
 ```shell
-git clone https://github.com/cptlobster/dehomograph.git
-cd dehomograph
+git clone https://github.com/cptlobster/utf-normalize.git
+cd utf-normalize
 cargo run -- -i [input file]
 ```
 
 ### Examples
 If you want to search for a word in a file using uncommon Unicode characters:
 ```shell
-dehomograph -i message.txt | grep "beans"
+utf-normalize -i message.txt | grep "beans"
 ```
 
 ## License
