@@ -63,17 +63,22 @@ pub fn range_translation(source: char, target: char, size: u32) -> Translator {
 /// The multi-range translator is primarily useful for cases such as the Mathematical Alphanumeric
 /// Symbols block, where there are several different formats of what are essentially the same
 /// letters right next to each other. This is more efficient than chaining multiple range
-/// translators, as it will use a modulus to collapse the adjacent ranges into one range. It can
-/// also handle non-adjacent ranges (i.e. multiple uppercase ranges separated by lowercase ranges)
-/// using the `slice` parameter.
+/// translators, as it will use a modulus to collapse the adjacent ranges into one range rather than
+/// checking every range independently.
+///
+/// It can also handle non-adjacent ranges (i.e. multiple uppercase ranges separated by lowercase
+/// ranges) by providing different values for `slice` and `size`, where a larger `slice` value will
+/// skip `slice - size - 1` characters after each range.
 ///
 /// ## Example
 /// We can create a multi-range translator to handle some of the characters in the Mathematical
 /// Alphanumeric Symbols block.
 /// ```rs
-/// // Mathematical bold, italic, bold/italic; uppercase
+/// // Mathematical bold, italic, bold/italic; uppercase only. this will skip over the lowercase
+/// // letters because of the `slice` parameter
 /// let tr_upper: Translator = multirange_translation('\u{1D400}', 'A', 26, 52, 3),
-/// // Mathematical bold, italic, bold/italic; lowercase
+/// // Mathematical bold, italic, bold/italic; lowercase only. this will skip over the uppercase
+/// // letters because of the `slice` parameter
 /// let tr_lower: Translator = multirange_translation('\u{1D41A}', 'a', 26, 52, 3),
 /// ```
 pub fn multirange_translation(source: char, target: char, size: u32, slice: u32, iters: u32) -> Translator {
