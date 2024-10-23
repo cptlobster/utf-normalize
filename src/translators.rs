@@ -71,7 +71,10 @@ pub fn range_translation(source: char, target: char, size: u32) -> Translator {
 /// We can create a multi-range translator to handle some of the characters in the Mathematical
 /// Alphanumeric Symbols block.
 /// ```rs
-/// todo!("Write example code");
+/// // Mathematical bold, italic, bold/italic; uppercase
+/// let tr_upper: Translator = multirange_translation('\u{1D400}', 'A', 26, 52, 3),
+/// // Mathematical bold, italic, bold/italic; lowercase
+/// let tr_lower: Translator = multirange_translation('\u{1D41A}', 'a', 26, 52, 3),
 /// ```
 pub fn multirange_translation(source: char, target: char, size: u32, slice: u32, iters: u32) -> Translator {
     let s: u32 = source as u32;
