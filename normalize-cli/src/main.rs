@@ -1,4 +1,4 @@
-/// Program for normalizing uncommon Unicode characters into their ASCII equivalents.
+/// utf-normalize command-line interface.
 //     Copyright (C) 2024  Dustin Thomas <io@cptlobster.dev>
 //
 //     This program is free software: you can redistribute it and/or modify
@@ -13,12 +13,11 @@
 //
 //     You should have received a copy of the GNU General Public License
 //     along with this program.  If not, see <https://www.gnu.org/licenses/>.
-mod translators;
 
 use std::io::{Read, Write};
 use clap::Parser;
 use clio::{Input, Output};
-use translators::{translate, range_translation, multirange_translation, ascii_filter};
+use libnormalize::translators::{translate, range_translation, multirange_translation, ascii_filter};
 
 /// Program for normalizing uncommon Unicode characters into their ASCII equivalents.
 #[derive(Parser, Debug)]

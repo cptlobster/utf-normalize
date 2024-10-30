@@ -1,8 +1,7 @@
-[package]
-name = "utf-normalize"
-version = "0.1.0"
-edition = "2021"
+[workspace]
 
-[dependencies]
-clap = { version = "4.5.20", features = ["derive"] }
-clio = { version = "0.3.5", features = ["clap-parse"] }
+members = [
+    "libnormalize",
+    "normalize-cli",
+    "normalize-gui",
+]
