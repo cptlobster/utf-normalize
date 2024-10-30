@@ -106,6 +106,7 @@ fn parse(path: String) {
     })
 }
 
+/// Convert a string into a single character.
 fn getchar(input: &str, section: &str) -> Option<char> {
     let char_parser = Regex::new(r"\\u\{([0-9a-fA-F]{1,8})}");
     if (input.len() == 1) { input.chars().nth(0) }
@@ -118,15 +119,17 @@ fn getchar(input: &str, section: &str) -> Option<char> {
     None
 }
 
-
+/// Print an error to stderr with context.
 fn handle_error(msg: &str, section: &str) {
     eprintln!("[config] Error in section {}: {}", section, msg);
 }
 
+/// Print an error to stderr with context and an associated value.
 fn handle_error_val(msg: &str, section: &str, value: &str) {
     eprintln!("[config] Error in section {}: {} ({})", section, msg, value);
 }
 
+/// Print an error to stderr with context and two values that are supposed to match but do not.
 fn handle_error_ne(msg: &str, section: &str, left: &str, right: &str) {
     eprintln!("[config] Error in section {}: {} ({} != {})", section, msg, left, right);
 }
