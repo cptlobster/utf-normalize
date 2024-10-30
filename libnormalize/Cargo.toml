@@ -4,3 +4,5 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+toml = { version = "0.8.19", features = ["parse", "preserve_order"] }
+regex = "1.11.1"

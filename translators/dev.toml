@@ -1,0 +1,38 @@
+# This is the DEVELOPMENT version of the full utf-normalize translator.
+# It is liable to change at any point during development, so please do not
+# consider this a source of truth. Versioned configurations will be included
+# in a future release.
+[global] # All global configuration parameters should go here
+use_ascii_filter = true
+
+[mathematical_alphanumeric_upper_1]
+type = "multirange"
+source = 'u\{1D400}'
+target = 'A'
+size = 26
+slice = 52
+iters = 5
+
+[mathematical_alphanumeric_lower_1]
+type = "multirange"
+source = 'u\{1D41A}'
+target = 'a'
+size = 26
+slice = 52
+iters = 5
+
+[mathematical_alphanumeric_upper_2]
+type = "multirange"
+source = 'u\{1D56C}'
+target = 'A'
+size = 26
+slice = 52
+iters = 5
+
+[mathematical_alphanumeric_lower_2]
+type = "multirange"
+source = 'u\{1D586}'
+target = 'a'
+size = 26
+slice = 52
+iters = 5

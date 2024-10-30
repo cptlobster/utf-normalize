@@ -1,0 +1,26 @@
+# This is a simple implementation of a Caesar cipher.
+# It shifts all ASCII characters once to the right, so
+# A -> B, B -> C, ... Z -> A
+[lower] # Handle uppercase letters from A-Y
+type = "range"
+source = 'a'
+target = 'b'
+size = 25
+
+[lower_wrap] # Since Z needs to wrap around, we have to translate separately
+type = "range"
+source = 'z'
+target = 'a'
+size = 1
+
+[upper] # Handle lowercase letters from A-Y
+type = "range"
+source = 'A'
+target = 'B'
+size = 25
+
+[upper_wrap] # again, translate wrapping around separately
+type = "range"
+source = 'Z'
+target = 'A'
+size = 1
