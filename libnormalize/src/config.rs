@@ -54,48 +54,29 @@ fn parse(path: String) {
     let mut translators: Vec<Translator> = Vec::new();
 
     // deal with the default config parameters
-    let use_af: bool = config.get("global.use_ascii_filter").unwrap_or(&Boolean(false)).as_bool()
+    let use_af: bool = config.get("global.use_ascii_filter").unwrap_or(&Boolean(false))
+        .as_bool()
         .unwrap_or(false);
 
     if use_af { translators.push(ascii_filter()); }
 
     config.keys().for_each(|section| {
+        let sect_table: &Table = config.get(section).unwrap().as_table().unwrap();
         if (section != "global") {
-            let t_type: String = config.get(section + ".type").unwrap().as_str().unwrap().to_string();
+            let t_type: String = sect_table.get("type").unwrap().as_str().unwrap()
+                .to_string();
 
             match t_type.as_str() {
                 "range" => {
-                    let src_str = config.get(section + ".source").unwrap().as_str().unwrap();
-                    let trg_str = config.get(section + ".target").unwrap().as_str().unwrap();
-                    let source: Option<char> = getchar(src_str, section);
-                    let target: Option<char> = getchar(trg_str, section);
-                    let size: u32 = config.get(section + ".size").unwrap().as_int().unwrap() as u32;
-
-                    let t: Translator = range_translation(source.unwrap(), target.unwrap(), size);
+                    let t: Translator = parse_rt(sect_table, section);
                     translators.push(t);
                 }
                 "multirange" => {
-                    let src_str = config.get(section + ".source").unwrap().as_str().unwrap();
-                    let trg_str = config.get(section + ".target").unwrap().as_str().unwrap();
-                    let source: Option<char> = getchar(src_str, section);
-                    let target: Option<char> = getchar(trg_str, section);
-                    let size: u32 = config.get(section + ".size").unwrap().as_int().unwrap() as u32;
-                    let slice: u32 = config.get(section + ".slice").unwrap().as_int().unwrap() as u32;
-                    let iters: u32 = config.get(section + ".iters").unwrap().as_int().unwrap() as u32;
-
-                    let t: Translator = multirange_translation(source.unwrap(), target.unwrap(),
-                                                               size, slice, iters);
+                    let t: Translator = parse_mrt(sect_table, section);
                     translators.push(t);
                 }
                 "lookup" => {
-                    let source: &str = config.get(section + ".source").unwrap().as_str().unwrap();
-                    let target: &str = config.get(section + ".target").unwrap().as_str().unwrap();
-
-                    if (source.len() != target.len()) {
-                        handle_error_ne("Source and target lengths must be equal", section, source.len(), target.len())
-                    }
-
-                    let t: Translator = lookup_translation(source, target);
+                    let t: Translator = parse_lut(sect_table, section);
                     translators.push(t);
                 }
                 value => {
@@ -104,6 +85,40 @@ fn parse(path: String) {
             }
         }
     })
+}
+
+fn parse_rt(config: &Table, section: &str) -> Translator {
+    let src_str = config.get("source").unwrap().as_str().unwrap();
+    let trg_str = config.get("target").unwrap().as_str().unwrap();
+    let source: Option<char> = getchar(src_str, section);
+    let target: Option<char> = getchar(trg_str, section);
+    let size: u32 = config.get("size").unwrap().as_int().unwrap() as u32;
+
+    range_translation(source.unwrap(), target.unwrap(), size)
+}
+
+fn parse_mrt(config: &Table, section: &str) -> Translator {
+    let src_str = config.get("source").unwrap().as_str().unwrap();
+    let trg_str = config.get("target").unwrap().as_str().unwrap();
+    let source: Option<char> = getchar(src_str, section);
+    let target: Option<char> = getchar(trg_str, section);
+    let size: u32 = config.get("size").unwrap().as_int().unwrap() as u32;
+    let slice: u32 = config.get("slice").unwrap().as_int().unwrap() as u32;
+    let iters: u32 = config.get("iters").unwrap().as_int().unwrap() as u32;
+
+    multirange_translation(source.unwrap(), target.unwrap(), size, slice, iters)
+}
+
+fn parse_lut(config: &Table, section: &str) -> Translator {
+    let source: &str = config.get("source").unwrap().as_str().unwrap();
+    let target: &str = config.get("target").unwrap().as_str().unwrap();
+
+    if (source.len() != target.len()) {
+        handle_error_ne("Source and target lengths must be equal", section,
+                        source.len().to_string().as_str(), target.len().to_string().as_str());
+    }
+
+    lookup_translation(source, target)
 }
 
 /// Convert a string into a single character.
@@ -115,7 +130,8 @@ fn getchar(input: &str, section: &str) -> Option<char> {
             Some(char::from_u32(u32::from_str_radix(pos.as_str(), 16).unwrap()).unwrap())
         })
     }
-    handle_error_val("Invalid character input (must be one character, or a Unicode codepoint in the format \"\\u{F0000}\")", section, input);
+    handle_error_val("Invalid character input (must be one character, or a Unicode codepoint \
+    in the format \"\\u{F0000}\")", section, input);
     None
 }
 
